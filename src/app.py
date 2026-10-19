@@ -11,6 +11,7 @@ from fastapi.responses import RedirectResponse
 import os
 from pathlib import Path
 
+# Create FastAPI app
 app = FastAPI(title="Mergington High School API",
               description="API for viewing and signing up for extracurricular activities")
 
@@ -38,6 +39,18 @@ activities = {
         "schedule": "Mondays, Wednesdays, Fridays, 2:00 PM - 3:00 PM",
         "max_participants": 30,
         "participants": ["john@mergington.edu", "olivia@mergington.edu"]
+    },
+    "Basketball Club": {
+        "description": "Practice basketball skills and play friendly games",
+        "schedule": "Tuesdays, 4:00 PM - 5:30 PM",
+        "max_participants": 20,
+        "participants": []
+    },
+    "Soccer Club": {
+        "description": "Build soccer skills and compete in team matches",
+        "schedule": "Thursdays, 4:00 PM - 5:30 PM",
+        "max_participants": 22,
+        "participants": []
     }
 }
 
@@ -61,6 +74,9 @@ def signup_for_activity(activity_name: str, email: str):
 
     # Get the specific activity
     activity = activities[activity_name]
+
+    if email in activity["participants"]:
+        raise HTTPException(status_code=409, detail="Student is already signed up for this activity")
 
     # Add student
     activity["participants"].append(email)
